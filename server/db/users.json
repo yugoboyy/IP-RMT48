@@ -1,0 +1,18 @@
+[
+    {
+        "name": "Ilham Saputra",
+        "email": "saputra@gmail.com",
+        "password": "saputra",
+        "gender": "Male",
+        "imgUrl": "https://gamebrott.com/wp-content/uploads/2021/09/8-Fakta-Raiden-Shogun-Genshin-Impact-yang-Perlu-Kamu-Ketahui-Header-1.jpg",
+        "uid": 806581898
+    },
+    {
+        "name": "Ilham Saputri",
+        "email": "saputri@gmail.com",
+        "password": "saputri",
+        "gender": "Female",
+        "imgUrl": "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/11/genshin-impact-furina-idle-animation.jpg",
+        "uid": 800525835
+    }
+]

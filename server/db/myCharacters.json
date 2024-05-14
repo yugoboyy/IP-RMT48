@@ -1,0 +1,56 @@
+[
+    {
+        "name": "raiden",
+        "level": 90,
+        "constalation": 0,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 1
+    },
+    {
+        "name": "nahida",
+        "level": 90,
+        "constalation": 2,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 1
+    },
+    {
+        "name": "nilou",
+        "level": 90,
+        "constalation": 1,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 1
+    },
+    {
+        "name": "shenhe",
+        "level": 90,
+        "constalation": 0,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 2
+    },
+    {
+        "name": "sucrose",
+        "level": 90,
+        "constalation": 6,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 2
+    },
+    {
+        "name": "xingqiu",
+        "level": 90,
+        "constalation": 6,
+        "normalAttack": 9,
+        "elementalSkill": 9,
+        "elementalBurst": 9,
+        "UserId": 2
+    }
+]

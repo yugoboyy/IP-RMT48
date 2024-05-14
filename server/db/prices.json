@@ -1,0 +1,26 @@
+[
+    {
+        "genesis": 60,
+        "price": 16000
+    },
+    {
+        "genesis": 300,
+        "price": 79000
+    },
+    {
+        "genesis": 980,
+        "price": 249000
+    },
+    {
+        "genesis": 1980,
+        "price": 499000
+    },
+    {
+        "genesis": 3280,
+        "price": 799000
+    },
+    {
+        "genesis": 6480,
+        "price": 1599000
+    }
+]
