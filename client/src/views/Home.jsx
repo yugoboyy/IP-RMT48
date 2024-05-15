@@ -4,7 +4,6 @@ import CharacterCard from "../components/CharacterCard";
 
 export default function Home() {
     const [characterList, setCharacterList] = useState([])
-    console.log(characterList)
 
     async function fetchCharacters() {
         try {
@@ -26,9 +25,11 @@ export default function Home() {
     }, [])
     return (
         <>
+        <div className="flex flex-wrap gap-10 items-center justify-center mt-10">
             {characterList.map((character, index) => {
                 return <CharacterCard key={index} character={character} />
             })}
+        </div>
         </>
     )
 }
