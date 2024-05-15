@@ -6,7 +6,6 @@ export default function CharacterDetail() {
     let { character } = useParams();
     const [characterDetail, setCharacterDetail] = useState({})
     const [name, setName] = useState(character)
-    console.log(characterDetail)
 
     async function fetchCharacterDetail() {
         try {

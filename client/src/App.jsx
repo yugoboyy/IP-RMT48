@@ -9,6 +9,7 @@ import Home from "./views/Home";
 import Navbar from "./components/Navbar";
 import CharacterDetail from "./views/CharacterDetail";
 import MyCharacter from "./views/MyCharacter";
+import EditForm from "./views/EditForm";
 
 function App() {
   const router = createBrowserRouter([
@@ -32,12 +33,16 @@ function App() {
           element: <Home />
         },
         {
-          path: "/:character",
-          element: <CharacterDetail />
+          path: "/myCharacters",
+          element: <MyCharacter />
         },
         {
-          path: "/myCharacter",
-          element: <MyCharacter />
+          path: "/myCharacter/:name",
+          element: <EditForm />
+        },
+        {
+          path: "/:character",
+          element: <CharacterDetail />
         }
       ]
     }
