@@ -1,5 +1,14 @@
-const hashPassword = require("../helpers/bcryptjs")
+const hashPassword = require("../helpers/bcryptjs");
+const { signToken, verifyToken } = require("../helpers/jwt");
 const { User, MyCharacter } = require("../models")
+const bcrypt = require('bcryptjs');
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 
 class Controller {
     static async home(req, res) {
@@ -18,6 +27,151 @@ class Controller {
                 id: data.id,
                 email: data.email
             })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async postLogin(req, res, next) {
+        try {
+            const { email, password } = req.body
+            if (!email) {
+                throw ({ name: "HttpError", status: 400, message: "Email is required" })
+            }
+            if (!password) {
+                throw ({ name: "HttpError", status: 400, message: "Password is required" })
+            }
+            let data = await User.findOne({
+                where: {
+                    email
+                }
+            })
+            if (!data) {
+                throw ({ name: "HttpError", status: 401, message: "Invalid email/password" })
+            }
+            let isPasswordValid = bcrypt.compareSync(password, data.password)
+            if (!isPasswordValid) {
+                throw ({ name: "HttpError", status: 401, message: "Invalid email/password" })
+            }
+            const access_token = signToken({ id: data.id })
+            res.status(200).json({ access_token })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async postMyCharacter(req, res, next) {
+        try {
+            let { id } = req.user
+            let { name } = req.body
+            let data = await MyCharacter.findOne({
+                where: {
+                    name,
+                    UserId: id
+                }
+            })
+            if (data) {
+                throw ({ name: "HttpError", status: 400, message: "You already have this character" })
+            }
+
+            await MyCharacter.create({ name, UserId: req.user.id })
+            res.status(201).json({ message: `success add ${name}` })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async putMyCharacter(req, res, next) {
+        try {
+            let { id } = req.user
+            let { name } = req.params
+            let { level, constalation, normalAttack, elementalSkill, elementalBurst } = req.body
+            let data = await MyCharacter.findOne({
+                where: {
+                    name,
+                    UserId: id
+                }
+            })
+            if (!data) {
+                throw ({ name: "HttpError", status: 400, message: "Character not found" })
+            }
+            await data.update({ level, constalation, normalAttack, elementalSkill, elementalBurst })
+            res.status(201).json(data)
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async deleteMyCharacter(req, res, next) {
+        try {
+            let { id } = req.user
+            let { name } = req.params
+            let data = await MyCharacter.findOne({
+                where: {
+                    name,
+                    UserId: id
+                }
+            })
+            if (!data) {
+                throw ({ name: "HttpError", status: 400, message: "You character not found" })
+            }
+            await data.destroy()
+            res.status(201).json({ message: "Success delete" })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async getUserDetail(req, res, next) {
+        try {
+            let { id } = req.user
+            let data = await User.findByPk(id, {
+                include: [MyCharacter],
+                attributes: {
+                    exclude: ["password", "createdAt", "updatedAt"]
+                }
+            })
+            res.status(200).json(data)
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async putUserDetail(req, res, next) {
+        try {
+            let { id } = req.user
+            let { name, gender, uid } = req.body
+            let data = await User.findByPk(id, {
+                attributes: {
+                    exclude: ["password", "createdAt", "updatedAt"]
+                }
+            })
+            await data.update({ name, gender, uid })
+            res.status(201).json(data)
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async patchUserDetail(req, res, next) {
+        try {
+            let { id } = req.user
+            let data = await User.findByPk(id)
+            if (!req.file) {
+                throw ({ name: "HttpError", status: 400, message: "Please provide an image file" })
+            }
+            const buffer = req.file.buffer.toString("base64")
+            const base64 = `data:${req.file.mimetype};base64,${buffer}`
+            let result = await cloudinary.uploader.upload(base64)
+            await data.update({ imgUrl: result.url })
+            res.status(201).json({ message: "Success update your profile picture" })
         } catch (error) {
             console.log(error)
             next(error)

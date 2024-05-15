@@ -70,7 +70,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    imgUrl: DataTypes.STRING,
+    imgUrl: {
+      type: DataTypes.STRING,
+      defaultValue: "https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1095249842.jpg"
+    },
     uid: {
       type: DataTypes.INTEGER,
       allowNull: false,
