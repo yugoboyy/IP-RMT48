@@ -34,7 +34,9 @@ function App() {
         },
         {
           path: "/myCharacters",
-          element: <MyCharacter />
+          element: <>
+            <MyCharacter />
+          </>
         },
         {
           path: "/myCharacter/:name",

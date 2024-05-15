@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 export default function CharacterDetail() {
     let { character } = useParams();
     const [characterDetail, setCharacterDetail] = useState({})
     const [name, setName] = useState(character)
+    const navigate = useNavigate()
 
     async function fetchCharacterDetail() {
         try {
@@ -15,6 +16,24 @@ export default function CharacterDetail() {
             })
             setCharacterDetail(data)
             setName(data.name)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    async function handleOnAdd() {
+        try {
+            let { data } = await axios({
+                method: "post",
+                url: "http://localhost:3000/myCharacter",
+                data: {
+                    name: character
+                },
+                headers: {
+                    authorization: "Bearer " + localStorage.getItem("access_token")
+                }
+            })
+            navigate("/myCharacters")
         } catch (error) {
             console.error(error)
         }
@@ -78,6 +97,7 @@ export default function CharacterDetail() {
                 </table>
             </div>
             <button
+                onClick={() => handleOnAdd()}
                 className=" mb-10 mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="button"
             >
