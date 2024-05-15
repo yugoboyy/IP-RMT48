@@ -62,6 +62,22 @@ class Controller {
         }
     }
 
+    static async getMyCharacters(req, res, next) {
+        try {
+            let { id } = req.user
+            let data = await MyCharacter.findAll({
+                where: {
+                    UserId: id
+                },
+                order: [["name", "ASC"]]
+            })
+            res.status(200).json(data)
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
     static async postMyCharacter(req, res, next) {
         try {
             let { id } = req.user
@@ -78,6 +94,23 @@ class Controller {
 
             await MyCharacter.create({ name, UserId: req.user.id })
             res.status(201).json({ message: `success add ${name}` })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async getMyCharacter(req, res, next) {
+        try {
+            let { name } = req.params
+            let { id } = req.user
+            let data = await MyCharacter.findOne({
+                where: {
+                    UserId: id,
+                    name
+                }
+            })
+            res.status(200).json(data)
         } catch (error) {
             console.log(error)
             next(error)

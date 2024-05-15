@@ -16,11 +16,51 @@ module.exports = (sequelize, DataTypes) => {
   }
   MyCharacter.init({
     name: DataTypes.STRING,
-    level: DataTypes.INTEGER,
-    constalation: DataTypes.INTEGER,
-    normalAttack: DataTypes.INTEGER,
-    elementalSkill: DataTypes.INTEGER,
-    elementalBurst: DataTypes.INTEGER,
+    level: {
+      type: DataTypes.INTEGER,
+      validate: {
+        max: {
+          args: 90,
+          msg: "Max level 90"
+        }
+      }
+    },
+    constalation: {
+      type: DataTypes.INTEGER,
+      validate: {
+        max: {
+          args: 6,
+          msg: "Max constalation 6"
+        }
+      }
+    },
+    normalAttack: {
+      type: DataTypes.INTEGER,
+      validate: {
+        max: {
+          args: 10,
+          msg: "Max normal attack 10"
+        }
+      }
+    },
+    elementalSkill: {
+      type: DataTypes.INTEGER,
+      validate: {
+        max: {
+          args: 10,
+          msg: "Max elemental skill 10"
+        }
+      }
+    },
+    elementalBurst: {
+      type: DataTypes.INTEGER,
+      validate: {
+        max: {
+          args: 10,
+          msg: "Max elemental burst 10"
+        }
+      }
+    },
     UserId: DataTypes.INTEGER
   }, {
     sequelize,

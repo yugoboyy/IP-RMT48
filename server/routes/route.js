@@ -16,7 +16,9 @@ router.post("/login", Controller.postLogin)
 
 router.use(authentication)
 
+router.get("/myCharacters", Controller.getMyCharacters)
 router.post("/myCharacter", Controller.postMyCharacter)
+router.get("/myCharacter/:name", Controller.getMyCharacter)
 router.put("/myCharacter/:name", Controller.putMyCharacter)
 router.delete("/myCharacter/:name", Controller.deleteMyCharacter)
 router.get("/userDetail", Controller.getUserDetail)
