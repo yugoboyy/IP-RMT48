@@ -245,7 +245,7 @@ class Controller {
             let { name, gender, uid } = req.body
             let data = await User.findByPk(id, {
                 attributes: {
-                    exclude: ["password", "createdAt", "updatedAt"]
+                    exclude: ["password", "updatedAt", "createdAt"]
                 }
             })
             await data.update({ name, gender, uid })
