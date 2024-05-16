@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
     gender: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "Not yet set",
       validate: {
         notEmpty: {
           msg: "Gender is required"
@@ -77,6 +78,7 @@ module.exports = (sequelize, DataTypes) => {
     uid: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: "000000000",
       validate: {
         notEmpty: {
           msg: "UID is required"

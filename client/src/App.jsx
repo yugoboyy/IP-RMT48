@@ -12,6 +12,8 @@ import CharacterDetail from "./views/CharacterDetail";
 import MyCharacter from "./views/MyCharacter";
 import EditForm from "./views/EditForm";
 import AccountDetail from "./views/AccountDetail";
+import { store } from './store'
+import { Provider } from 'react-redux'
 
 function App() {
   const router = createBrowserRouter([
@@ -80,9 +82,9 @@ function App() {
     }
   ]);
   return (
-    <>
+    <Provider store={store}>
       <RouterProvider router={router} />
-    </>
+    </Provider>
   )
 }
 

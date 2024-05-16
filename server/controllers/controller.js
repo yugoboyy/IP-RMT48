@@ -2,12 +2,16 @@ const hashPassword = require("../helpers/bcryptjs");
 const { signToken, verifyToken } = require("../helpers/jwt");
 const { User, MyCharacter } = require("../models")
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
+const { OAuth2Client } = require('google-auth-library');
+const { Op } = require("sequelize");
+const client = new OAuth2Client();
 
 
 class Controller {
@@ -62,6 +66,79 @@ class Controller {
         }
     }
 
+    static async postLoginGoogle(req, res, next) {
+        try {
+            const { googleToken } = req.body
+            const ticket = await client.verifyIdToken({
+                idToken: googleToken,
+                audience: "730683743033-cc49meaplb4v06n2cu6aiqv5f9dv214o.apps.googleusercontent.com",
+            });
+            const payload = ticket.getPayload();
+            // const userid = payload['sub'];
+            let user = await User.findOne({
+                where: {
+                    email: payload.email
+                }
+            })
+
+            if (!user) {
+                user = await User.create(
+                    {
+                        name: payload.name,
+                        email: payload.email,
+                        password: payload.name
+                    },
+                    {
+                        hooks: false
+                    }
+                )
+            }
+
+            const access_token = signToken({ id: user.id })
+
+            res.status(200).json({ access_token })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async getMyCharacters(req, res, next) {
+        try {
+            let { id } = req.user
+            let { search, filter, page } = req.query
+            let option = {
+                where: {
+                    UserId: id
+                },
+                limit: 8,
+                order: [["name", "ASC"]]
+            }
+            if (search) {
+                option.where.name = {
+                    [Op.iLike]: `%${search}%`
+                }
+            }
+            if (filter) {
+                option.where.constalation = filter
+            }
+            if (page) {
+                option.offset = (page - 1) * 8
+            }
+            let { count, rows } = await MyCharacter.findAndCountAll(option)
+            res.status(200).json({
+                page: +page || 1,
+                totalData: count,
+                totalPages: Math.ceil(count/8),
+                dataPerPage: 8,
+                data: rows
+            })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
     static async postMyCharacter(req, res, next) {
         try {
             let { id } = req.user
@@ -78,6 +155,23 @@ class Controller {
 
             await MyCharacter.create({ name, UserId: req.user.id })
             res.status(201).json({ message: `success add ${name}` })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    static async getMyCharacter(req, res, next) {
+        try {
+            let { name } = req.params
+            let { id } = req.user
+            let data = await MyCharacter.findOne({
+                where: {
+                    UserId: id,
+                    name
+                }
+            })
+            res.status(200).json(data)
         } catch (error) {
             console.log(error)
             next(error)
@@ -101,7 +195,7 @@ class Controller {
             await data.update({ level, constalation, normalAttack, elementalSkill, elementalBurst })
             res.status(201).json(data)
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             next(error)
         }
     }
