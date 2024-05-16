@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
+import { genshinApi, serverApi } from "../utils/api";
 
 export default function CharacterDetail() {
     let { character } = useParams();
@@ -10,9 +10,9 @@ export default function CharacterDetail() {
 
     async function fetchCharacterDetail() {
         try {
-            let { data } = await axios({
+            let { data } = await genshinApi({
                 method: 'get',
-                url: 'https://genshin.jmp.blue/characters/' + character
+                url: '/characters/' + character
             })
             setCharacterDetail(data)
             setName(data.name)
@@ -26,9 +26,9 @@ export default function CharacterDetail() {
             if (!localStorage.getItem("access_token")) {
                 navigate("/login")
             } else {
-                let { data } = await axios({
+                let { data } = await serverApi({
                     method: "post",
-                    url: "http://localhost:3000/myCharacter",
+                    url: "/myCharacter",
                     data: {
                         name: character
                     },

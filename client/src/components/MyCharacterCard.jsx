@@ -1,15 +1,15 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { genshinApi, serverApi } from "../utils/api";
 
-export default function MyCharacterCard({ myCharacter, fetchMyCharacters }) {
+export default function MyCharacterCard({ paginationOption, myCharacter, fetchMyCharacters }) {
     const [characterDetail, setCharacterDetail] = useState("")
 
     async function fetchCaracterDetail() {
         try {
-            let { data } = await axios({
+            let { data } = await genshinApi({
                 method: 'get',
-                url: 'https://genshin.jmp.blue/characters/' + myCharacter.name
+                url: '/characters/' + myCharacter.name
             })
             setCharacterDetail(data)
         } catch (error) {
@@ -19,9 +19,9 @@ export default function MyCharacterCard({ myCharacter, fetchMyCharacters }) {
 
     async function handleOnDelete(name) {
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "delete",
-                url: 'http://localhost:3000/myCharacter/' + name,
+                url: '/myCharacter/' + name,
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 }
@@ -31,22 +31,21 @@ export default function MyCharacterCard({ myCharacter, fetchMyCharacters }) {
             console.error(error)
         }
     }
+    useEffect(() => {
+        fetchCaracterDetail()
+    }, [paginationOption])
 
     useEffect(() => {
         fetchCaracterDetail()
     }, [])
 
     return (
-        <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <a href="#">
-                <img className="rounded-t-lg" src={`https://genshin.jmp.blue/characters/${myCharacter.name}/card`} alt="" />
-            </a>
+        <div className="max-w-sm bg-white flex flex-col justify-between border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <img className="rounded-t-lg h-full"  src={`https://genshin.jmp.blue/characters/${myCharacter.name}/card`} alt="" />
             <div className="p-5">
-                <a href="#">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        {characterDetail.name}
-                    </h5>
-                </a>
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    {characterDetail.name}
+                </h5>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                     Level: {myCharacter.level}
                 </p>

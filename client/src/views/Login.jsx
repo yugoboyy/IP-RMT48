@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Swal from 'sweetalert2'
+import { serverApi } from "../utils/api";
 
 export default function Login() {
     const [email, setEmail] = useState("")
@@ -11,9 +11,9 @@ export default function Login() {
     const handleOnSubmit = (async (event) => {
         event.preventDefault()
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "post",
-                url: "http://localhost:3000/login",
+                url: "/login",
                 data: {
                     email,
                     password
@@ -35,9 +35,9 @@ export default function Login() {
         const googleToken = response.credential
 
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "post",
-                url: "http://localhost:3000/login/google",
+                url: "/login/google",
                 data: {
                     googleToken
                 }

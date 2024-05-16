@@ -1,7 +1,7 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from 'sweetalert2'
+import { serverApi } from "../utils/api"
 
 export default function AccountDetail() {
     const [accountDetail, setAccountDetail] = useState({})
@@ -14,9 +14,9 @@ export default function AccountDetail() {
 
     async function fetchUserDetail() {
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "get",
-                url: "http://localhost:3000/userDetail",
+                url: "/userDetail",
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 }
@@ -34,9 +34,9 @@ export default function AccountDetail() {
     async function handleOnSubmit(event) {
         event.preventDefault()
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "put",
-                url: "http://localhost:3000/userDetail",
+                url: "/userDetail",
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 },
@@ -68,8 +68,8 @@ export default function AccountDetail() {
             const formData = new FormData();
             formData.append("imgUrl", file);
 
-            const { data } = await axios.patch(
-                `http://localhost:3000/userDetail`,
+            const { data } = await serverApi.patch(
+                `/userDetail`,
                 formData,
                 {
                     headers: {

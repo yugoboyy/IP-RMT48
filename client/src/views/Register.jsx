@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"
 import Swal from 'sweetalert2'
+import { serverApi } from "../utils/api";
 
 export default function Register() {
     const [name, setName] = useState("")
@@ -14,9 +14,9 @@ export default function Register() {
     async function handleOnSubmit(event) {
         event.preventDefault()
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: "post",
-                url: "http://localhost:3000/user",
+                url: "/user",
                 data: {
                     name,
                     email,

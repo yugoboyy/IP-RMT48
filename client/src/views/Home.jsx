@@ -17,7 +17,7 @@ export default function Home() {
 
     return (
         <>
-            <div className="flex flex-wrap gap-10 items-center justify-center mt-10">
+            <div className="flex flex-wrap gap-10 justify-center mt-10">
                 {characterList.map((character, index) => {
                     return <CharacterCard key={index} character={character} />
                 })}

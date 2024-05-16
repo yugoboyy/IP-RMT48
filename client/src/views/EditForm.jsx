@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
+import { serverApi } from "../utils/api";
 
 export default function EditForm() {
     const { name } = useParams()
@@ -15,9 +15,9 @@ export default function EditForm() {
 
     async function fetchMyCaracterDetail() {
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: 'get',
-                url: 'http://localhost:3000/myCharacter/' + name,
+                url: '/myCharacter/' + name,
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 }
@@ -35,9 +35,9 @@ export default function EditForm() {
     async function handleOnSubmit(event) {
         event.preventDefault()
         try {
-            let { data } = await axios({
+            let { data } = await serverApi({
                 method: 'put',
-                url: 'http://localhost:3000/myCharacter/' + name,
+                url: '/myCharacter/' + name,
                 headers: {
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 },
