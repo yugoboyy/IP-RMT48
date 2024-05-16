@@ -1,8 +1,6 @@
-const hashPassword = require("../helpers/bcryptjs");
-const { signToken, verifyToken } = require("../helpers/jwt");
+const { signToken } = require("../helpers/jwt");
 const { User, MyCharacter } = require("../models")
 const bcrypt = require('bcryptjs');
-const axios = require('axios');
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,8 +24,9 @@ class Controller {
     static async postUser(req, res, next) {
         try {
             const { name, email, password, gender, imgUrl, uid } = req.body
-            let data = await User.create({ name, email, password: hashPassword(password), gender, imgUrl, uid })
-            res.status(200).json({
+            console.log(password)
+            let data = await User.create({ name, email, password, gender, imgUrl, uid })
+            res.status(201).json({
                 id: data.id,
                 email: data.email
             })
@@ -129,7 +128,7 @@ class Controller {
             res.status(200).json({
                 page: +page || 1,
                 totalData: count,
-                totalPages: Math.ceil(count/8),
+                totalPages: Math.ceil(count / 8),
                 dataPerPage: 8,
                 data: rows
             })
@@ -171,6 +170,9 @@ class Controller {
                     name
                 }
             })
+            if (!data) {
+                throw ({ name: "HttpError", status: 404, message: "Character not found" })
+            }
             res.status(200).json(data)
         } catch (error) {
             console.log(error)
@@ -190,7 +192,7 @@ class Controller {
                 }
             })
             if (!data) {
-                throw ({ name: "HttpError", status: 400, message: "Character not found" })
+                throw ({ name: "HttpError", status: 404, message: "Character not found" })
             }
             await data.update({ level, constalation, normalAttack, elementalSkill, elementalBurst })
             res.status(201).json(data)
@@ -211,7 +213,7 @@ class Controller {
                 }
             })
             if (!data) {
-                throw ({ name: "HttpError", status: 400, message: "You character not found" })
+                throw ({ name: "HttpError", status: 404, message: "You character not found" })
             }
             await data.destroy()
             res.status(201).json({ message: "Success delete" })
