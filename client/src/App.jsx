@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   Outlet,
+  redirect,
   RouterProvider,
 } from "react-router-dom";
 import Register from './views/Register';
@@ -10,6 +11,7 @@ import Navbar from "./components/Navbar";
 import CharacterDetail from "./views/CharacterDetail";
 import MyCharacter from "./views/MyCharacter";
 import EditForm from "./views/EditForm";
+import AccountDetail from "./views/AccountDetail";
 
 function App() {
   const router = createBrowserRouter([
@@ -20,6 +22,12 @@ function App() {
     {
       path: "/login",
       element: <Login />,
+      loader: () => {
+        if (localStorage.getItem("access_token")) {
+          return redirect("/myCharacters")
+        }
+        return null
+      }
     },
     {
       path: "/",
@@ -36,11 +44,33 @@ function App() {
           path: "/myCharacters",
           element: <>
             <MyCharacter />
-          </>
+          </>,
+          loader: () => {
+            if (!localStorage.getItem("access_token")) {
+              return redirect("/login")
+            }
+            return null
+          }
         },
         {
           path: "/myCharacter/:name",
-          element: <EditForm />
+          element: <EditForm />,
+          loader: () => {
+            if (!localStorage.getItem("access_token")) {
+              return redirect("/login")
+            }
+            return null
+          }
+        },
+        {
+          path: "/accountDetail",
+          element: <AccountDetail />,
+          loader: () => {
+            if (!localStorage.getItem("access_token")) {
+              return redirect("/login")
+            }
+            return null
+          }
         },
         {
           path: "/:character",

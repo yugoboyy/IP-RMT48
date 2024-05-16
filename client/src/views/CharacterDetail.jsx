@@ -23,17 +23,21 @@ export default function CharacterDetail() {
 
     async function handleOnAdd() {
         try {
-            let { data } = await axios({
-                method: "post",
-                url: "http://localhost:3000/myCharacter",
-                data: {
-                    name: character
-                },
-                headers: {
-                    authorization: "Bearer " + localStorage.getItem("access_token")
-                }
-            })
-            navigate("/myCharacters")
+            if (!localStorage.getItem("access_token")) {
+                navigate("/login")
+            } else {
+                let { data } = await axios({
+                    method: "post",
+                    url: "http://localhost:3000/myCharacter",
+                    data: {
+                        name: character
+                    },
+                    headers: {
+                        authorization: "Bearer " + localStorage.getItem("access_token")
+                    }
+                })
+                navigate("/myCharacters")
+            }
         } catch (error) {
             console.error(error)
         }
@@ -47,7 +51,7 @@ export default function CharacterDetail() {
         document.title = name;
     }, [name])
     return (
-        <div className="flex flex-col bg-slate-200 items-center justify-center items-center">
+        <div className="flex flex-col bg-slate-200 items-center justify-center">
             <h1 className="text-7xl bg-slate-300 font-bold w-full text-center" >{characterDetail.name}</h1>
             <div className="flex flex-col justify-center items-center gap-5">
                 <img src={`https://genshin.jmp.blue/characters/${character}/gacha-splash`} alt={`https://genshin.jmp.blue/characters/${character}/portrait`} />

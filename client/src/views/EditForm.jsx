@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 export default function EditForm() {
     const { name } = useParams()
@@ -10,6 +11,7 @@ export default function EditForm() {
     const [elementalSkill, setelementalSkill] = useState(1)
     const [elementalBurst, setelementalBurst] = useState(1)
     const navigate = useNavigate()
+    console.log(constalation)
 
     async function fetchMyCaracterDetail() {
         try {
@@ -49,7 +51,12 @@ export default function EditForm() {
             })
             navigate("/myCharacters")
         } catch (error) {
-            console.error(error)
+            console.error(error.response?.data.message || error.message)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+            });
         }
     }
 

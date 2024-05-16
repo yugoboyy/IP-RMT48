@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 export default function Login() {
     const [email, setEmail] = useState("")
@@ -22,15 +23,56 @@ export default function Login() {
             navigate("/")
         } catch (error) {
             console.error(error.response?.data.message || error.mesage)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+            });
         }
     })
+
+    async function handleCredentialResponse(response) {
+        const googleToken = response.credential
+
+        try {
+            let { data } = await axios({
+                method: "post",
+                url: "http://localhost:3000/login/google",
+                data: {
+                    googleToken
+                }
+            })
+            localStorage.setItem("access_token", data.access_token)
+            navigate("/")
+        } catch (error) {
+            console.error(error.response?.data.message || error.mesage)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+            });
+        }
+
+    }
+
+    useEffect(() => {
+        google.accounts.id.initialize({
+            client_id: "730683743033-cc49meaplb4v06n2cu6aiqv5f9dv214o.apps.googleusercontent.com",
+            callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+            document.getElementById("buttonDiv"),
+            { theme: "outline", size: "large" }  // customization attributes
+        );
+        // google.accounts.id.prompt();
+    }, [])
 
     useEffect(() => {
         document.title = "Login";
     }, [])
     return (
         <>
-            <div className="flex h-screen items-center justify-center">
+            <div className="flex flex-col h-screen items-center justify-center">
                 <form onSubmit={handleOnSubmit} className="w-2/3 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4 flex justify-center">
                         <h1
@@ -83,6 +125,13 @@ export default function Login() {
                         </Link>
                     </div>
                 </form>
+                <div className="flex flex-col items-center justify-center" >
+                    <h1>
+                        or
+                    </h1>
+                    <div id="buttonDiv"></div>
+
+                </div>
             </div>
         </>
     )
