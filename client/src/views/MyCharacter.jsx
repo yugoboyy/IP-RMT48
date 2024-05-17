@@ -14,8 +14,6 @@ export default function MyCharacter() {
         dataPerPage: 0,
     });
 
-    console.log(myCharacters)
-
     async function fetchMyCharacters(currentPage) {
         try {
             if (paginationOption.totalPages && currentPage > paginationOption.totalPages) {
@@ -68,6 +66,13 @@ export default function MyCharacter() {
     }, [])
 
     useEffect(() => {
+        (async () => {
+            let data = await fetchMyCharacters(1)
+            setMyCharacters(data)
+        })()
+    }, [paginationOption.totalData])
+
+    useEffect(() => {
         document.title = "My Character";
     }, [])
     return (
@@ -110,7 +115,7 @@ export default function MyCharacter() {
                     className="flex flex-wrap justify-center gap-6 mt-3 mb-10"
                 >
                     {myCharacters.map((myCharacter, index) => {
-                        return <MyCharacterCard key={index} myCharacter={myCharacter} fetchMyCharacters={fetchMyCharacters} paginationOption={paginationOption} />
+                        return <MyCharacterCard key={index} myCharacter={myCharacter} fetchMyCharacters={fetchMyCharacters} paginationOption={paginationOption} setMyCharacters={setMyCharacters} />
                     })}
                 </InfiniteScroll>
 

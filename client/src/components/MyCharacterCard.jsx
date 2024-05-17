@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { genshinApi, serverApi } from "../utils/api";
 
-export default function MyCharacterCard({ paginationOption, myCharacter, fetchMyCharacters }) {
+export default function MyCharacterCard({ setMyCharacters, paginationOption, myCharacter, fetchMyCharacters }) {
     const [characterDetail, setCharacterDetail] = useState("")
 
     async function fetchCaracterDetail() {
@@ -26,7 +26,7 @@ export default function MyCharacterCard({ paginationOption, myCharacter, fetchMy
                     authorization: "Bearer " + localStorage.getItem("access_token")
                 }
             })
-            fetchMyCharacters()
+            fetchMyCharacters(1)
         } catch (error) {
             console.error(error)
         }
@@ -41,7 +41,7 @@ export default function MyCharacterCard({ paginationOption, myCharacter, fetchMy
 
     return (
         <div className="max-w-sm bg-white flex flex-col justify-between border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <img className="rounded-t-lg h-full"  src={`https://genshin.jmp.blue/characters/${myCharacter.name}/card`} alt="" />
+            <img className="rounded-t-lg h-full" src={`https://genshin.jmp.blue/characters/${myCharacter.name}/card`} alt="" />
             <div className="p-5">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {characterDetail.name}

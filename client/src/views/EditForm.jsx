@@ -11,7 +11,6 @@ export default function EditForm() {
     const [elementalSkill, setelementalSkill] = useState(1)
     const [elementalBurst, setelementalBurst] = useState(1)
     const navigate = useNavigate()
-    console.log(constalation)
 
     async function fetchMyCaracterDetail() {
         try {

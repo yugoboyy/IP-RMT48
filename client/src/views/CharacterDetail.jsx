@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import { genshinApi, serverApi } from "../utils/api";
+import SkillTable from "../components/SkillTable";
+import Swal from "sweetalert2";
 
 export default function CharacterDetail() {
     let { character } = useParams();
     const [characterDetail, setCharacterDetail] = useState({})
     const [name, setName] = useState(character)
     const navigate = useNavigate()
+    const [skill, setSkill] = useState([])
 
     async function fetchCharacterDetail() {
         try {
@@ -15,6 +18,7 @@ export default function CharacterDetail() {
                 url: '/characters/' + character
             })
             setCharacterDetail(data)
+            setSkill(data.skillTalents)
             setName(data.name)
         } catch (error) {
             console.error(error)
@@ -39,7 +43,12 @@ export default function CharacterDetail() {
                 navigate("/myCharacters")
             }
         } catch (error) {
-            console.error(error)
+            console.error(error.response?.data.message || error.message)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+            });
         }
     }
 
@@ -99,6 +108,13 @@ export default function CharacterDetail() {
                         </tr>
                     </tbody>
                 </table>
+                <div className="flex gap-3">
+                    {skill.map((skillName, index) => {
+                        return (
+                            <SkillTable key={index} skillName={skillName} />
+                        )
+                    })}
+                </div>
             </div>
             <button
                 onClick={() => handleOnAdd()}
